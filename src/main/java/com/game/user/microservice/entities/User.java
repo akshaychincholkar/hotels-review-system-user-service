@@ -1,11 +1,10 @@
 package com.game.user.microservice.entities;
 
+import com.game.reviews.microservice.entities.Rating;
 import lombok.*;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
+import java.util.List;
 
 @Getter
 @Setter
@@ -21,4 +20,6 @@ public class User {
     private String name;
     private String email;
     private String about;
+    @Transient
+    private List<Rating> ratings;
 }

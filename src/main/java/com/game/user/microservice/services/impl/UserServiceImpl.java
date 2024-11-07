@@ -6,13 +6,18 @@ import com.game.user.microservice.repositories.UserRepository;
 import com.game.user.microservice.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 @Service
 public class UserServiceImpl implements UserService {
     @Autowired
     UserRepository userRepository;
+
+    @Autowired
+    RestTemplate restTemplate;
 
     @Override
     public User saveUser(User user) {
@@ -23,7 +28,11 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User getUser(String userId) {
-        return userRepository.findById(userId).orElseThrow(()->new UserNotFoundException(userId));
+        User user = userRepository.findById(userId).orElseThrow(()->new UserNotFoundException(userId));
+        // Get the ratings
+        ArrayList ratings = restTemplate.getForObject("http://RATING-SERVICE/ratings/user/"+user.getId(),ArrayList.class);
+        user.setRatings(ratings);
+        return user;
     }
 
     @Override
